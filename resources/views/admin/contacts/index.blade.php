@@ -3,7 +3,7 @@
 
 @section('content')
 <h4 class="mb-1">Contact requests</h4>
-<p class="text-muted mb-4">Messages sent through the form on the Contacto page.</p>
+<p class="text-muted mb-4">Messages sent through the form on the Contact page.</p>
 <div class="card">
   <div class="card-header border-bottom">
     <form method="GET" class="row g-3 align-items-end">

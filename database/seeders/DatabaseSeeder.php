@@ -64,12 +64,13 @@ class DatabaseSeeder extends Seeder
             'site.name' => 'Cab Media', 'site.tagline' => 'One stop solution for all your media & marketing needs',
             'site.about' => 'A team of experienced professionals in the field of Communications, Advertising & Branding.', 'site.email' => 'info@cabmedia.in', 'site.phone' => '+91 9820446872 / +91 8805013828',
             'ai.base_url' => 'https://openrouter.ai/api/v1', 'ai.model' => 'meta-llama/llama-3.3-70b-instruct:free', 'ai.fallback_model' => 'google/gemma-3-27b-it:free',
-            'news.mode' => 'ai', 'news.rewrite_mode' => 'faithful', 'news.language' => 'Spanish', 'news.per_run' => '1', 'news.auto_publish' => '0', 'news.max_age_days' => '3',
-            'news.audience' => 'Pymes y autónomos de habla hispana que quieren aplicar inteligencia artificial y automatización a sus procesos.',
+            'news.mode' => 'ai', 'news.rewrite_mode' => 'faithful', 'news.language' => 'English', 'news.per_run' => '1', 'news.auto_publish' => '0', 'news.max_age_days' => '3',
+            'news.audience' => 'Business owners and marketers in India looking for practical advice on media, advertising, branding and digital marketing.',
+            'lead.webhook_url' => 'https://nexusai.phpcodedemo.com/webhooks/website/nexus-demo-company',
             'seo.article_default_schema' => 'BlogPosting',
             'site.offices' => "Ahmedabad\nBengaluru\nChennai\nDelhi\nMangalore\nLucknow\nUSA",
-            'site.cta_text' => 'Get in touch', 'site.cta_url' => '/#contact',
-            'site.footer_cta_text' => 'Start a brief', 'site.footer_cta_url' => '/#contact',
+            'site.cta_text' => 'Get in touch', 'site.cta_url' => '/contact-us',
+            'site.footer_cta_text' => 'Start a brief', 'site.footer_cta_url' => '/contact-us',
             'site.footer_note' => '© {year} Cab Media. All rights reserved.',
         ];
         foreach ($defaults as $k => $v) {
@@ -83,17 +84,15 @@ class DatabaseSeeder extends Seeder
     /** Header and footer menus (editable in Admin > Header & Footer). Parents without a URL act as column headings in the footer. */
     private function menus(): void
     {
-        $services = [
-            ['Advertising & Media', '/#services', 'Creative, advertising, branding, media, PR'],
-            ['Digital Marketing', '/services/digital-marketing', 'Be found, be remembered and keep customers coming back.'],
-            ['Development', '/services/development', 'Websites, apps and software built around how you work.'],
-            ['IT Services', '/services/it-services', 'The infrastructure and data foundations behind a reliable business.'],
-            ['AI Services', '/services/ai-services', 'Practical AI inside your marketing, websites and decisions.'],
-        ];
-        $links = [['Home', '/#home'], ['About Us', '/#about'], ['Testimonials', '/#testimonials'], ['Blog', '/blog'], ['Contact', '/#contact']];
+        $services = [];
+        foreach (\App\Support\ServicesCatalog::CARDS as $slug => $c) {
+            $svc = \App\Support\ServicesCatalog::find($slug);
+            $services[] = [$svc['title'], '/services/'.$slug, $svc['short']];
+        }
+        $links = [['Home', '/#home'], ['About Us', '/about-us'], ['Testimonials', '/#testimonials'], ['Blog', '/blog'], ['Contact', '/contact-us']];
 
         $n = 0;
-        foreach ([['Home', '/#home'], ['About Us', '/#about'], ['Services', '/#services', $services], ['Testimonials', '/#testimonials'], ['Blog', '/blog'], ['Contact', '/#contact']] as $row) {
+        foreach ([['Home', '/#home'], ['About Us', '/about-us'], ['Services', '/#services', $services], ['Testimonials', '/#testimonials'], ['Blog', '/blog'], ['Contact', '/contact-us']] as $row) {
             $parent = MenuItem::create(['location' => 'header', 'title' => $row[0], 'url' => $row[1], 'sort_order' => $n++, 'is_active' => true]);
             foreach ($row[2] ?? [] as $i => [$t, $u, $d]) MenuItem::create(['location' => 'header', 'parent_id' => $parent->id, 'title' => $t, 'url' => $u, 'description' => $d, 'sort_order' => $i, 'is_active' => true]);
         }

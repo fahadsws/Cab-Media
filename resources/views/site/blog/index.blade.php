@@ -54,7 +54,7 @@
         <div class="ico">@include('site.partials.icon', ['n' => 'news'])</div>
         <h2 class="h3">{{ $q !== '' ? 'No articles match “'.$q.'”.' : 'Articles are on their way.' }}</h2>
         <p class="muted">{{ $q !== '' ? 'Try a different word, or browse all articles.' : 'We are preparing our first posts. In the meantime, tell us about your brief.' }}</p>
-        <a href="{{ $q !== '' ? route('blog.index') : url('/').'#contact' }}" class="btn">{{ $q !== '' ? 'All articles' : 'Contact us' }} <span class="arr">→</span></a>
+        <a href="{{ $q !== '' ? route('blog.index') : route('contact') }}" class="btn">{{ $q !== '' ? 'All articles' : 'Contact us' }} <span class="arr">→</span></a>
       </div>
     @endif
   </div>

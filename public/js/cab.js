@@ -245,9 +245,9 @@
     var LAYOUT = { wide: { W: 600, H: 470 }, tall: { W: 400, H: 540 } };
     var N = {
       brief:    { l: 'Your brief',  i: 'brief',    w: { c: [130, 78],  o: [124, 96]  }, t: { c: [96, 74],   o: [64, 70]   } },
-      brand:    { l: 'Your brand',  i: 'brand',    w: { c: [480, 66],  o: [124, 235] }, t: { c: [304, 62],  o: [200, 70]  } },
+      brand:    { l: 'Your brand',  i: 'brand',    w: { c: [112, 292], o: [124, 235] }, t: { c: [92, 330],  o: [200, 70]  } },
       budget:   { l: 'Your budget', i: 'budget',   w: { c: [300, 414], o: [124, 374] }, t: { c: [206, 470], o: [336, 70]  } },
-      creative: { l: 'Creative',    i: 'creative', w: { c: [112, 292], o: [462, 108] }, t: { c: [92, 330],  o: [64, 470]  } },
+      creative: { l: 'Creative',    i: 'creative', w: { c: [480, 66],  o: [462, 108] }, t: { c: [304, 62],  o: [64, 470]  } },
       media:    { l: 'Media buying', i: 'media',   w: { c: [490, 262], o: [462, 235] }, t: { c: [310, 350], o: [200, 470] } },
       digital:  { l: 'Digital & PR', i: 'digital', w: { c: [300, 196], o: [462, 366] }, t: { c: [200, 210], o: [336, 470] } },
       hub:      { l: 'Cab Media',   i: 'hub', ai: 1, appear: 1, w: { c: [285, 235], o: [285, 235] }, t: { c: [200, 270], o: [200, 270] } }
@@ -256,7 +256,7 @@
     var orderLinks = [['brief', 'hub'], ['brand', 'hub'], ['budget', 'hub'], ['hub', 'creative'], ['hub', 'media'], ['hub', 'digital']];
     var stage = $('.flow-stage', flow), svg = $('svg', stage);
     var mode = 'wide', W = 600, H = 470;
-    svg.innerHTML = '<defs><linearGradient id="og" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="600" y2="0"><stop offset="0" stop-color="#ff4a4a"/><stop offset="1" stop-color="#ff8f70"/></linearGradient></defs>';
+    svg.innerHTML = '<defs><linearGradient id="og" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="600" y2="0"><stop offset="0" stop-color="#c71316"/><stop offset="1" stop-color="#ef5a4a"/></linearGradient></defs>';
     var els = {};
     Object.keys(N).forEach(function (k) {
       var n = N[k], e = d.createElement('div');
@@ -265,9 +265,9 @@
       stage.appendChild(e); els[k] = { box: e };
     });
     function mk(tag, attrs) { var e = d.createElementNS(NS, tag); for (var a in attrs) e.setAttribute(a, attrs[a]); svg.appendChild(e); return e; }
-    var cPaths = chaosLinks.map(function () { return mk('path', { fill: 'none', stroke: 'rgba(255,255,255,.28)', 'stroke-width': 1.4, 'stroke-dasharray': '4 6' }); });
+    var cPaths = chaosLinks.map(function () { return mk('path', { fill: 'none', stroke: 'rgba(39,39,39,.35)', 'stroke-width': 1.4, 'stroke-dasharray': '4 6' }); });
     var oPaths = orderLinks.map(function () { return mk('path', { fill: 'none', stroke: 'url(#og)', 'stroke-width': 2.2, 'stroke-linecap': 'round' }); });
-    var dots = []; oPaths.forEach(function () { for (var k = 0; k < 2; k++) dots.push(mk('circle', { r: 3.6, fill: '#fff' })); });
+    var dots = []; oPaths.forEach(function () { for (var k = 0; k < 2; k++) dots.push(mk('circle', { r: 3.6, fill: '#c71316' })); });
     var grad = $('#og', svg);
     function applyLayout() {
       var m = window.matchMedia('(max-width: 700px)').matches ? 'tall' : 'wide';
@@ -282,7 +282,7 @@
     window.addEventListener('resize', applyLayout);
     var tabs = $$('.flow-tabs button', flow), cap = null;
 
-    var target = 0, cur = 0, state = 'chaos', auto = !reduce, last = performance.now(), visible = true, timer;
+    var target = 1, cur = 1, state = 'order', auto = false, last = performance.now(), visible = true, timer;
     function pos(k, e) { var n = N[k][mode === 'tall' ? 't' : 'w']; return [n.c[0] + (n.o[0] - n.c[0]) * e, n.c[1] + (n.o[1] - n.c[1]) * e]; }
     function frame(now) {
       requestAnimationFrame(frame);
@@ -326,10 +326,21 @@
     }
     tabs.forEach(function (b) { b.addEventListener('click', function () { setState(b.getAttribute('data-state'), true); }); });
     function loop() { if (!auto) return; timer = setTimeout(function () { if (auto) { setState(state === 'chaos' ? 'order' : 'chaos'); loop(); } }, state === 'chaos' ? 3200 : 6500); }
-    setState('chaos'); if (auto) setTimeout(function () { if (auto) { setState('order'); loop(); } }, 2600);
+    setState('order');
     if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }).observe(flow);
     requestAnimationFrame(frame);
   }
+
+  /* ---------- offices gallery: one panel open at a time ---------- */
+  $$('.ogal').forEach(function (g) {
+    var items = $$('.ogi', g);
+    function open(it) { items.forEach(function (x) { x.classList.toggle('on', x === it); }); }
+    items.forEach(function (it) {
+      it.addEventListener('mouseenter', function () { open(it); });
+      it.addEventListener('focus', function () { open(it); });
+      it.addEventListener('click', function () { open(it); });
+    });
+  });
 
   /* ---------- scroll-spy for the single-page navigation ---------- */
   var navLinks = $$('.nav-links > a[href^="/#"], .nav-links .dd > a[href^="/#"]');
@@ -343,20 +354,6 @@
     }, { rootMargin: '-45% 0px -50% 0px' });
     spySecs.forEach(function (s) { spy.observe(s); });
   }
-
-  /* ---------- service tabs ---------- */
-  var stabs = $$('.svc-tabs button');
-  stabs.forEach(function (b) {
-    b.addEventListener('click', function () {
-      var g = b.getAttribute('data-group');
-      stabs.forEach(function (x) { x.setAttribute('aria-selected', String(x === b)); });
-      $$('.svc-pane').forEach(function (p) {
-        var on = p.getAttribute('data-group') === g;
-        p.hidden = !on;
-        if (on) $$('[data-reveal]', p).forEach(function (el, i) { el.classList.remove('in'); void el.offsetWidth; setTimeout(function () { el.classList.add('in'); }, 40 + i * 40); });
-      });
-    });
-  });
 
   /* ---------- testimonials ---------- */
   var tst = $('.tst');

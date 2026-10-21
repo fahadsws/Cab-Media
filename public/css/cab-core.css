@@ -716,3 +716,6 @@ section[id]{scroll-margin-top:68px}
 }
 
 @media(min-width:980px){.foot-main{grid-template-columns:1.4fr repeat(auto-fit,minmax(11rem,1fr))}}
+
+.svc-banner{padding-top:clamp(1.5rem,3vw,2.5rem)}
+.svc-banner img{display:block;width:100%;height:clamp(14rem,32vw,26rem);object-fit:cover;border-radius:1.6rem;box-shadow:0 30px 70px -40px rgba(0,0,0,.5)}

@@ -3,9 +3,9 @@
   use App\Support\ServicesCatalog as Cat;
   $isCat = $s['category'] ?? false;
   [$groupName, $groupDesc] = Cat::GROUPS[$s['group']];
-  $siblings = array_values(array_filter(Cat::inGroup($s['group']), fn ($x) => $x['slug'] !== $s['slug']));
+  $siblings = array_values(array_filter(Cat::all(), fn ($x) => $x['slug'] !== $s['slug']));
   [$prev, $next] = Cat::neighbours($s['slug']);
-  $quote = url('/').'?service='.$s['slug'].'#contact';
+  $quote = route('contact').'?service='.$s['slug'];
 @endphp
 @section('title', $s['title'].' | Cab Media')
 @section('description', $s['tagline'].' '.$s['short'])
@@ -31,7 +31,6 @@
   <div class="wrap">
     <nav class="crumbs" aria-label="Breadcrumb" data-reveal>
       <a href="/">Home</a><span>/</span><a href="/#services">Services</a><span>/</span>
-      @if (! $isCat && in_array($s['group'], ['digital', 'development', 'it', 'ai']))<a href="{{ route('service.show', ['slug' => ['digital' => 'digital-marketing', 'development' => 'development', 'it' => 'it-services', 'ai' => 'ai-services'][$s['group']]]) }}">{{ $groupName }}</a><span>/</span>@endif
       <b>{{ $s['title'] }}</b>
     </nav>
     <div class="phead-grid">
@@ -58,7 +57,7 @@
     </div>
     <aside class="side sticky" data-reveal style="--d:1">
       <div class="side-card">
-        <h3 class="h3">{{ $groupName }}</h3>
+        <h3 class="h3">All services</h3>
         <ul>
           @foreach ($siblings as $x)<li><a href="{{ route('service.show', $x['slug']) }}"><span class="ico">@include('site.partials.icon', ['n' => $x['icon']])</span>{{ $x['title'] }}</a></li>@endforeach
         </ul>

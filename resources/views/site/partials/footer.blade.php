@@ -4,17 +4,17 @@
   $tree = $C::menu('footer');
   $cols = $tree->filter(fn ($i) => $i->children->count());
   $loose = $tree->filter(fn ($i) => ! $i->children->count());
-  $wm = Setting::get('site.footer_logo') ?: '/img/cabmedia-wordmark.png';
+  $wm = Setting::get('site.logo') ?: '/img/cabmedia-logo.jpg';
   $note = str_replace('{year}', date('Y'), Setting::get('site.footer_note', '© {year} Cab Media. All rights reserved.'));
   $fctaText = Setting::get('site.footer_cta_text', 'Start a brief');
-  $fctaUrl = Setting::get('site.footer_cta_url', '/#contact');
+  $fctaUrl = \App\Support\SiteContent::fixUrl(Setting::get('site.footer_cta_url', '/contact-us'));
   $name = Setting::get('site.name', 'Cab Media');
 @endphp
 <footer class="foot">
   <div class="wrap">
     <div class="foot-main">
       <div class="foot-brand">
-        <a href="/#home" class="brand" aria-label="{{ $name }}, home"><img class="wm" src="{{ $wm }}" alt="{{ $name }}" height="22"></a>
+        <a href="/#home" class="brand" aria-label="{{ $name }}, home"><img class="wm" src="{{ $wm }}" alt="{{ $name }}" height="64"></a>
         <p class="tagline">{{ $C::tagline() }}</p>
         <a href="{{ $fctaUrl }}" class="btn">{{ $fctaText }} <span class="arr">→</span></a>
       </div>

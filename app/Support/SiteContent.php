@@ -8,12 +8,24 @@ namespace App\Support;
  */
 class SiteContent
 {
-    public const NAV = [['Home', '#home'], ['About Us', '#about'], ['Services', '#services'], ['Testimonials', '#testimonials'], ['Blog', '/blog'], ['Contact', '#contact']];
+    public const NAV = [['Home', '#home'], ['About Us', '/about-us'], ['Services', '#services'], ['Testimonials', '#testimonials'], ['Blog', '/blog'], ['Contact', '/contact-us']];
 
     public const EMAIL = 'info@cabmedia.in';
     public const PHONES = [['+91 9820446872', '+919820446872'], ['+91 8805013828', '+918805013828']];
 
     public const OFFICES = ['Ahmedabad', 'Bengaluru', 'Chennai', 'Delhi', 'Mangalore', 'Lucknow', 'USA'];
+
+    /** Office city => [landmark, Unsplash photo id] for the home page gallery. */
+    public const OFFICE_PHOTOS = [
+        'ahmedabad' => ['Adalaj Stepwell', '1617338727645-987dddeef332'],
+        'bengaluru' => ['Vidhana Soudha', '1709967884183-7ffa9d168508'],
+        'bangalore' => ['Vidhana Soudha', '1709967884183-7ffa9d168508'],
+        'chennai' => ['Kapaleeshwarar Gopuram', '1650566696029-4d1c8e92e077'],
+        'delhi' => ['India Gate', '1587474260584-136574528ed5'],
+        'mangalore' => ['Panambur Beach', '1622173324953-adb598835e7a'],
+        'lucknow' => ['Rumi Darwaza', '1688287580970-70fe8e0f4bef'],
+        'usa' => ['Golden Gate Bridge', '1501594907352-04cda38ebc29'],
+    ];
 
     /** Rotating line in the hero (the three slides of the current site). */
     public const SLIDES = ['Advertising solutions for all communication needs', 'Banners in terms of digital and OOH', 'Communication is the core for reaching to the audiences'];
@@ -73,10 +85,22 @@ class SiteContent
     }
 
     /** Header / footer menu from Admin > Header & Footer; falls back to the built-in links when the admin has none. */
+    /** Old one-page anchors now live on their own pages. */
+    public static function fixUrl(?string $u): ?string
+    {
+        return ['/#about' => '/about-us', '#about' => '/about-us', '/#contact' => '/contact-us', '#contact' => '/contact-us'][$u] ?? $u;
+    }
+
     public static function menu(string $location)
     {
         $tree = \App\Models\MenuItem::tree($location);
-        if ($tree->count()) return $tree;
+        if ($tree->count()) {
+            $fix = function ($items) use (&$fix) {
+                foreach ($items as $i) { $i->url = self::fixUrl($i->url); $fix($i->children); }
+            };
+            $fix($tree);
+            return $tree;
+        }
 
         $fallback = collect(self::NAV)->map(fn ($n) => (object) ['title' => $n[0], 'url' => '/'.ltrim($n[1], '/'), 'open_new_tab' => false, 'children' => collect()]);
         return $fallback;

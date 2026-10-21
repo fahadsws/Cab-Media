@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [Site\PageController::class, 'home'])->name('home');
 Route::get('/services', fn () => redirect('/#services', 301));
+Route::get('/about-us', [Site\PageController::class, 'about'])->name('about');
+Route::get('/contact-us', [Site\PageController::class, 'contact'])->name('contact');
 Route::get('/services/{slug}', [Site\PageController::class, 'service'])->where('slug', '[a-z0-9-]+')->name('service.show');
 Route::get('/sitemap.xml', [Site\PageController::class, 'sitemap'])->name('sitemap');
 Route::post('/api/contacto', [Site\PageController::class, 'contactSubmit'])->middleware('throttle:6,1')->name('contacto.submit');

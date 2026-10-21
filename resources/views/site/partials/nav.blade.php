@@ -4,7 +4,7 @@
   $menu = $C::menu('header');
   $logo = Setting::get('site.logo') ?: '/img/cabmedia-logo.jpg';
   $ctaText = Setting::get('site.cta_text', 'Get in touch');
-  $ctaUrl = Setting::get('site.cta_url', '/#contact');
+  $ctaUrl = $C::fixUrl(Setting::get('site.cta_url', '/contact-us'));
   $here = '/'.trim(request()->path(), '/');
   $active = fn ($u) => $u && ! str_contains($u, '#') && $u !== '/' && ($here === rtrim($u, '/') || str_starts_with($here, rtrim($u, '/').'/'));
 @endphp

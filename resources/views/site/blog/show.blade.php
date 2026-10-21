@@ -86,7 +86,7 @@
       <div class="side-card side-card--cta">
         <h3 class="h3">Need help with this?</h3>
         <p>Share a short brief and the Cab Media team will respond with a clear recommendation.</p>
-        <a href="{{ url('/') }}#contact" class="btn">Start a brief <span class="arr">→</span></a>
+        <a href="{{ route('contact') }}" class="btn">Start a brief <span class="arr">→</span></a>
       </div>
     </aside>
   </div>

@@ -37,6 +37,7 @@
     <link rel="preload" href="/fonts/plus-jakarta-sans-700-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="alternate" type="application/rss+xml" title="Cab Media Blog" href="{{ url('/blog/feed.xml') }}" />
     <link rel="stylesheet" href="{{ asset('css/cab.css') }}?v={{ filemtime(public_path('css/cab.css')) }}" />
+    <link rel="stylesheet" href="{{ asset('css/cab-light.css') }}?v={{ filemtime(public_path('css/cab-light.css')) }}" />
     @yield('jsonld')
   </head>
   <body>

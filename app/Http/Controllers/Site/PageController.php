@@ -14,9 +14,15 @@ class PageController extends Controller
 {
     public function home() { return view('site.pages.home'); }
 
+    public function about() { return view('site.pages.about'); }
+
+    public function contact() { return view('site.pages.contact'); }
+
     /** Service detail pages and the four category landing pages. */
     public function service(string $slug)
     {
+        if ($to = \App\Support\ServicesCatalog::MOVED[$slug] ?? null) return redirect()->route('service.show', $to, 301);
+
         $s = \App\Support\ServicesCatalog::find($slug);
         abort_unless($s, 404);
 
@@ -35,7 +41,7 @@ class PageController extends Controller
     public function sitemap()
     {
         $base = rtrim(config('site.url'), '/');
-        $urls = [$base.'/'];
+        $urls = [$base.'/', $base.'/about-us', $base.'/contact-us'];
         foreach (array_keys(\App\Support\ServicesCatalog::all()) as $slug) $urls[] = $base.'/services/'.$slug;
         $urls[] = $base.'/blog';
         foreach (\App\Models\Article::published()->latest('published_at')->take(2000)->get(['slug']) as $a) $urls[] = $base.'/blog/'.$a->slug;
@@ -69,6 +75,41 @@ class PageController extends Controller
         $to = Setting::get('site.email') ?: config('site.contact_email');
         try { if ($to) Mail::to($to)->send(new ContactRequestReceived($req)); } catch (\Throwable $e) { report($e); }
 
+        $this->sendLead($req, $r);
+
         return response()->json(['ok' => true]);
+    }
+
+    /** Lead transfer: forward the enquiry to the CRM webhook (URL and secret live in the settings table, not in the admin UI). */
+    private function sendLead(ContactRequest $req, Request $r): void
+    {
+        $url = Setting::get('lead.webhook_url');
+        if (! $url) return;
+        $secret = (string) Setting::get('lead.webhook_secret', '');
+
+        $body = json_encode([
+            'event_id' => 'cabmedia-contact-'.$req->id,
+            'profile_id' => 'cabmedia-website',
+            'entry_method' => 'link',
+            'networking_group' => '',
+            'visitor' => ['name' => $req->nombre, 'email' => $req->email, 'phone' => (string) $req->telefono, 'company' => (string) $req->empresa, 'message' => $req->mejora],
+            'card_owner' => ['name' => Setting::get('site.name', 'Cab Media'), 'email' => \App\Support\SiteContent::email()],
+            'consent' => ['notifications' => true, 'voice' => false, 'photo' => false, 'notes' => false],
+            'extras' => ['voice_url' => '', 'selfie_url' => '', 'notes' => ''],
+            'utm' => ['source' => (string) $r->input('utm_source', ''), 'medium' => (string) $r->input('utm_medium', ''), 'campaign' => (string) $r->input('utm_campaign', '')],
+            'summary' => $req->mejora,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        $headers = ['Accept' => 'application/json'];
+        if ($secret !== '') $headers['X-Signature'] = 'sha256='.hash_hmac('sha256', $body, $secret);
+
+        dispatch(function () use ($url, $body, $headers) {
+            try {
+                $res = \Illuminate\Support\Facades\Http::withHeaders($headers)->withBody($body, 'application/json')->timeout(10)->post($url);
+                \Illuminate\Support\Facades\Log::log($res->successful() ? 'info' : 'warning', 'Lead webhook '.$res->status(), ['body' => substr($res->body(), 0, 300)]);
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        })->afterResponse();
     }
 }

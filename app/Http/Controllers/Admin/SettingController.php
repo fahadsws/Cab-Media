@@ -31,10 +31,10 @@ class SettingController extends Controller
                 ['site.address', 'Address', 'text', ''],
                 ['site.offices', 'Office locations (footer & contact)', 'textarea', 'One per line or comma separated, e.g. Delhi, Chennai, USA.'],
                 ['site.cta_text', 'Header button text', 'text', 'Default: Get in touch'],
-                ['site.cta_url', 'Header button link', 'text', 'Default: /#contact'],
+                ['site.cta_url', 'Header button link', 'text', 'Default: /contact-us'],
                 ['site.footer_logo', 'Footer logo (wordmark)', 'image', 'Shown in the footer on the dark background. A transparent PNG works best. Leave empty for the built-in wordmark.'],
                 ['site.footer_cta_text', 'Footer button text', 'text', 'Default: Start a brief'],
-                ['site.footer_cta_url', 'Footer button link', 'text', 'Default: /#contact'],
+                ['site.footer_cta_url', 'Footer button link', 'text', 'Default: /contact-us'],
                 ['site.footer_note', 'Footer copyright line', 'text', 'Use {year} for the current year.'],
             ]],
             'Social profiles' => ['ti-share', [
@@ -67,8 +67,8 @@ class SettingController extends Controller
             ]],
             'Blog automation' => ['ti-robot', [
                 ['news.mode', 'How should fetched posts be published?', 'select:ai=AI rewrite (own words; same facts)|scrape=Scrape only (copy as published; no AI)', 'AI rewrite needs the AI provider. Scrape only copies the page as published and credits the source: no AI cost, but check each source\'s terms before republishing.'],
-                ['news.language', 'Language of AI-written posts', 'select:English=English|Spanish=Spanish (Español)', 'The AI writes the post, title, FAQ and SEO fields in this language.'],
-                ['news.audience', 'Audience / topic focus', 'textarea', 'One or two sentences telling the AI who the blog is for and what it covers. Example: "Spanish SMEs looking to apply AI and automation to their processes."'],
+                ['news.language', 'Language of AI-written posts', 'select:English=English|Spanish=Spanish', 'The AI writes the post, title, FAQ and SEO fields in this language.'],
+                ['news.audience', 'Audience / topic focus', 'textarea', 'One or two sentences telling the AI who the blog is for and what it covers. Example: "Business owners in India looking for practical advice on advertising and digital marketing."'],
                 ['news.rewrite_mode', 'AI rewrite style', 'select:faithful=Faithful (same facts; new wording)|original=Original (fresh editorial piece)', 'Only used when "AI rewrite" is selected above.'],
                 ['news.scrape_ai_seo', 'Scrape only: let AI fill empty meta description, FAQ and takeaways', 'bool', 'Never touches the post text. Needs the AI provider; ignored if none is set.'],
                 ['news.per_run', 'Posts to publish per run', 'number', 'Total across all sources each time the blog task runs.'],

@@ -18,21 +18,21 @@
       <p class="lead" data-reveal style="--d:2">We are a team of experienced professionals in the field of Communications, Advertising &amp; Branding.</p>
       <p class="rot" data-reveal style="--d:3"><span data-words="{{ implode('|', $C::SLIDES) }}">{{ $C::SLIDES[0] }}</span></p>
       <div class="hero-actions" data-reveal style="--d:4">
-        <a href="#contact" class="btn" data-magnetic>Start a brief <span class="arr">→</span></a>
+        <a href="{{ route('contact') }}" class="btn" data-magnetic>Start a brief <span class="arr">→</span></a>
         <a href="#services" class="link">Our services</a>
       </div>
     </div>
 
-    <div class="flow" id="flow" data-state="chaos" data-reveal="zoom" style="--d:3" role="group" aria-label="Illustration: separate agencies versus one orchestrated partner">
+    <div class="flow" id="flow" data-state="order" data-reveal="zoom" style="--d:3" role="group" aria-label="Illustration: separate agencies versus one orchestrated partner">
       <div class="flow-bar">
-                <div class="flow-tabs"><button type="button" data-state="chaos" aria-pressed="true">Without one partner</button><button type="button" data-state="order" aria-pressed="false">With Cab Media</button></div>
+                <div class="flow-tabs"><button type="button" data-state="chaos" aria-pressed="false">Without partner</button><button type="button" data-state="order" aria-pressed="true">With Cab Media</button></div>
       </div>
       <div class="flow-stage"><svg aria-hidden="true"></svg></div>
       <div class="flow-cap" aria-live="polite"><span class="c-chaos"><b>Today:</b> separate agencies, the same brief repeated, mismatched messages and nobody who owns the whole picture.</span><span class="c-order"><b>With Cab Media:</b> one brief, one plan, one team across creative, media and digital. Tailor made for your brand.</span></div>
       <div class="flow-badge">One team</div>
     </div>
   </div>
-  <a href="#about" class="scrollcue" aria-label="Scroll down"></a>
+  <a href="#services" class="scrollcue" aria-label="Scroll down"></a>
 </section>
 
 {{-- ============ MARQUEE ============ --}}
@@ -40,66 +40,31 @@
   <div class="marq"><div class="marq-track">@foreach (['Creative', 'Advertising', 'Branding', 'Media Planning', 'PR', 'Digital'] as $w)<span>{{ $w }}</span>@endforeach</div></div>
 </section>
 
-{{-- ============ ABOUT ============ --}}
-<section class="sec sec--cream" id="about">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow" data-reveal>About us</span>
-      <h2 class="h2 split">How are we different?</h2>
-    </div>
-    <div class="split2">
-      <div class="sticky">
-        <p class="quote" data-reveal>We are a team of experienced professionals in the field of Communications, Advertising &amp; Branding.</p>
-        <div class="chips" style="margin-top:1.6rem" data-reveal><span class="chip">Above the Line (ATL)</span><span class="chip">Below the Line (BTL)</span><span class="chip">National &amp; International</span></div>
-      </div>
-      <div class="prose">
-        <p data-reveal>This professional experience spans for <strong>20 plus years</strong>, having associated with the top advertising / media / digital agencies in the country, the team is well equipped to handle any kind of “Media / Marketing Hurdles” faced by a brand under the sun, by providing an “appropriate” and “Cost effective” solution helping reach out to the right Target Audience, in the National &amp; International Markets.</p>
-        <p data-reveal>In the current Media / Marketing scenario, where most agencies/brands adopt the “One size fits all” policy, we strongly believe that not everyone fits the same mold, and hence provide <strong>“Tailor Made”</strong> solutions for brands that not only would help it reach the right audience but also propel it to grow as expected.</p>
-        <p data-reveal><strong>Services offered:</strong> (National &amp; International Markets) Above the Line (ATL) and Below the Line (BTL).</p>
-      </div>
-    </div>
-    <div class="stats" style="margin-top:clamp(2.5rem,6vw,4.5rem)" data-reveal>
-      <div class="stat"><b><span data-count="20">0</span>+</b><span>years of professional experience in communications, advertising &amp; branding.</span></div>
-      <div class="stat"><b><span data-count="7">0</span></b><span>service lines under one roof: from creative to digital marketing.</span></div>
-      <div class="stat"><b><span data-count="7">0</span></b><span>office locations across India and the USA.</span></div>
-      <div class="stat"><b>ATL<small style="font-size:.4em;letter-spacing:0"> + </small>BTL</b><span>national and international campaigns, tailor made for each brand.</span></div>
-    </div>
-  </div>
-</section>
-
 {{-- ============ SERVICES ============ --}}
 <section class="sec" id="services">
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head" style="max-width:none">
       <span class="eyebrow" data-reveal>Services</span>
-      <h2 class="h2 split">Everything your brand needs to be seen, grow and run, under one roof.</h2>
-      <p class="lead" data-reveal>From a single poster to a full digital platform: pick an area, then open any service for the details.</p>
+      <h2 class="h2 split" style="max-width:none">Everything your brand needs to be seen, grow and run, under one roof.</h2>
+      <p class="lead" data-reveal>From a single poster to a full digital platform: open any service for the details.</p>
     </div>
 
-    @php $Cat = \App\Support\ServicesCatalog::class; $catSlug = ['digital' => 'digital-marketing', 'development' => 'development', 'it' => 'it-services', 'ai' => 'ai-services']; @endphp
-    <div class="svc-tabs" role="tablist" aria-label="Service areas" data-reveal>
-      @foreach ($Cat::GROUPS as $g => [$gname])
-        <button type="button" role="tab" data-group="{{ $g }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}"><span>{{ $gname }}</span><em>{{ count($Cat::inGroup($g, true)) }}</em></button>
+    @php $Cat = \App\Support\ServicesCatalog::class; @endphp
+    <div class="svc-grid">
+      @foreach ($Cat::CARDS as $slug => [$img, $items])
+        @php $svc = $Cat::find($slug); @endphp
+        <a href="{{ route('service.show', $slug) }}" class="svc-tile" data-reveal style="--d:{{ $loop->index % 3 }}">
+          <span class="svc-img"><img src="https://images.unsplash.com/photo-{{ $img }}?auto=format&fit=crop&w=700&q=70" alt="" loading="lazy" width="700" height="440"></span>
+          <h3>{{ $svc['title'] }}</h3>
+          <ul>@foreach ($items as $it)<li>{{ $it }}</li>@endforeach</ul>
+          <span class="go" aria-hidden="true">Learn more <i>→</i></span>
+        </a>
       @endforeach
     </div>
 
-    @foreach ($Cat::GROUPS as $g => [$gname, $gdesc])
-      <div class="svc-pane" data-group="{{ $g }}" @if (! $loop->first) hidden @endif role="tabpanel">
-        <div class="svc-head">
-          <div><h3 class="h3" style="font-size:1.5rem">{{ $gname }}</h3><p class="muted">{{ $gdesc }}</p></div>
-          @if (isset($catSlug[$g]))<a href="{{ route('service.show', $catSlug[$g]) }}" class="link">Explore {{ $gname }}</a>@endif
-        </div>
-        <div class="svc-cards">
-          @foreach ($Cat::inGroup($g, true) as $c)
-            @include('site.partials.service-card', ['c' => $c, 'i' => $loop->index])
-          @endforeach
-        </div>
-      </div>
-    @endforeach
-
     <div class="svc-cta" data-reveal>
       <div><h3 class="h3" style="font-size:1.4rem">Not sure what you need?</h3><p>Tell us the brief. We will shape the right mix for your brand and your audience.</p></div>
-      <a href="#contact" class="btn" data-magnetic>Start a brief <span class="arr">→</span></a>
+      <a href="{{ route('contact') }}" class="btn" data-magnetic>Start a brief <span class="arr">→</span></a>
     </div>
   </div>
 </section>
@@ -108,6 +73,30 @@
 <section class="sec sec--dark" style="overflow:hidden">
   <div class="wrap">
     <h2 class="fill" style="max-width:22ch">Not everyone fits the same mold. So we build tailor made, cost effective solutions that reach the right audience and help your brand grow.</h2>
+  </div>
+</section>
+
+{{-- ============ OFFICES ============ --}}
+<section class="sec" id="offices">
+  <div class="wrap">
+    <div class="sec-head" style="max-width:none">
+      <span class="eyebrow" data-reveal>Our offices</span>
+      <h2 class="h2 split">Seven cities, one team, wherever your audience is.</h2>
+    </div>
+    @php $offs = $C::offices(); @endphp
+    <div class="ogal" data-reveal>
+      @foreach ($offs as $o)
+        @php $ph = $C::OFFICE_PHOTOS[strtolower($o)] ?? null; @endphp
+        <article class="ogi @if ($loop->first) on @endif" tabindex="0" aria-label="{{ $o }} office">
+          @if ($ph)<img src="https://images.unsplash.com/photo-{{ $ph[1] }}?auto=format&fit=crop&w=900&q=70" alt="{{ $ph[0] }}, {{ $o }}" loading="lazy" width="900" height="1100">@endif
+          <span class="ogi-v" aria-hidden="true">{{ $o }}</span>
+          <div class="ogi-in">
+            <span class="ogi-no">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+            <h3>{{ $o }}</h3>
+          </div>
+        </article>
+      @endforeach
+    </div>
   </div>
 </section>
 
@@ -161,40 +150,4 @@
 </section>
 @endif
 
-{{-- ============ CONTACT ============ --}}
-<section class="sec sec--dark" id="contact" style="overflow:hidden">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow" data-reveal>Contact us</span>
-      <h2 class="h2 split">Let's talk about your brand.</h2>
-    </div>
-    <div class="contact-grid">
-      <div data-reveal>
-        <h3 class="h3" style="margin-bottom:1.2rem">Enquiry</h3>
-        <form id="contact-form" class="form form--dark">
-          <div class="hp" aria-hidden="true"><label for="web">Leave this field empty</label><input id="web" tabindex="-1" autocomplete="off" type="text" value="" name="web"></div>
-          <div class="row2">
-            <div class="field"><input id="f-nombre" placeholder=" " required type="text" name="nombre" autocomplete="name"><label for="f-nombre">Name</label></div>
-            <div class="field"><input id="f-tel" placeholder=" " required type="tel" name="telefono" autocomplete="tel"><label for="f-tel">Phone number</label></div>
-          </div>
-          <div class="row2">
-            <div class="field"><input id="f-email" placeholder=" " required type="email" name="email" autocomplete="email"><label for="f-email">Email</label></div>
-            <div class="field"><input id="f-empresa" placeholder=" " required type="text" name="empresa" autocomplete="organization"><label for="f-empresa">Company name</label></div>
-          </div>
-          <div class="field"><textarea id="f-mejora" placeholder=" " name="mejora" rows="5" required></textarea><label for="f-mejora">Additional message</label></div>
-          <div class="form-err" role="alert" hidden></div>
-          <button type="submit" class="btn" data-magnetic><span>Submit</span> <span class="arr">→</span></button>
-        </form>
-      </div>
-      <aside data-reveal style="--d:2">
-        <h3 class="h3" style="margin-bottom:1.2rem">Our offices</h3>
-        <ul class="offices">@foreach ($C::offices() as $o)<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>{{ $o }}</li>@endforeach</ul>
-        <div class="direct direct--dark" style="margin-top:1.6rem">
-          <a href="mailto:{{ $C::email() }}"><span class="ico">@include('site.partials.icon', ['n' => 'mail'])</span><span><small>Email</small><b>{{ $C::email() }}</b></span></a>
-          @foreach ($C::phones() as [$label, $tel])<a href="tel:{{ $tel }}"><span class="ico">@include('site.partials.icon', ['n' => 'phone'])</span><span><small>Phone</small><b>{{ $label }}</b></span></a>@endforeach
-        </div>
-      </aside>
-    </div>
-  </div>
-</section>
 @endsection
